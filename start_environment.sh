@@ -5,7 +5,9 @@
 . src/io_parser.sh
 
 
-custom_message "Starting a local development environment for a Drupal $CORE_VERSION project, to test a patch against $MODULE$VERSION"
+custom_message "Starting a local development environment for a \n
+\tDrupal $CORE_VERSION project, \n
+\tto test a patch against $MODULE$VERSION"
 run_composer "composer create-project drupal/recommended-project:^$CORE_VERSION $PROJECT_NAME"
 
 # This folder exists.
@@ -41,7 +43,7 @@ run_lando "lando composer require cweagans/composer-patches"
 run_lando "lando composer require szeidler/composer-patches-cli:^1.0"
 run_lando "lando composer patch-enable --file=patches.json"
 
-run_lando "lando composer patch-add drupal/$MODULE $MODULE $PATCH;"
+run_lando "lando composer patch-add drupal/${MODULE} ${MODULE} ${PATCH} "
 
 
 
@@ -61,10 +63,10 @@ run_lando "lando drush en $MODULE"
 echo -e "Done.\n"
 
 custom_message "Use any of these URLS to access the site"
-lando info --service="appserver" | grep http | sed  's/\[//g' | sed 's/ //g' | awk  -F '\047' '{printf "%s\n", $2}'
+lando info --service="appserver" | grep http | sed  's/\[//g' | sed 's/ //g' | awk  -F '\047' '{printf "\t%s\n", $2}'
 
-custom_message "Log in with these credentials"
 run_lando "lando drush upwd admin admin"
+custom_message "Log in with these credentials"
 
-echolor "User:        admin"
-echolor "Password:    admin"
+echolor "\tUser:        admin"
+echolor "\tPassword:    admin"

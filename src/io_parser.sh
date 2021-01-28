@@ -77,7 +77,7 @@ echo "Patch                    = ${PATCH}"
 echo "Project name (folder)    = ${PROJECT_NAME}"
 
 if [ "${VERBOSITY}" -ge "1" ] ; then
-	echo "Lando recipe            = ${LANDO_RECIPE}"
+	echo "Lando recipe             = ${LANDO_RECIPE}"
 fi
 
 
