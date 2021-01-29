@@ -36,16 +36,19 @@ fi
 custom_message "Adding $MODULE as a requirement via Composer"
 run_lando "lando composer require drupal/$MODULE$VERSION  --no-update"
 
+if [ "${PATCH_WORKFLOW}" ]; then
+	custom_message "Setting up patches libraries and downloading patch."
 
-custom_message "Setting up patches libraries and downloading patch."
+	run_lando "lando composer require cweagans/composer-patches"
+	run_lando "lando composer require szeidler/composer-patches-cli:^1.0"
+	run_lando "lando composer patch-enable --file=patches.json"
 
-run_lando "lando composer require cweagans/composer-patches"
-run_lando "lando composer require szeidler/composer-patches-cli:^1.0"
-run_lando "lando composer patch-enable --file=patches.json"
-
-run_lando "lando composer patch-add drupal/${MODULE} ${MODULE} ${PATCH} "
-
-
+	run_lando "lando composer patch-add drupal/${MODULE} ${MODULE} ${PATCH} "
+else
+	#lando composer config repositories.drupal/view_password_fork git https://git.drupalcode.org/issue/view_password-3192191.git
+	#require drupal/view_password:dev-1234651dfgdfgh
+	#composer install
+fi
 
 custom_message "Running composer install"
 run_lando "lando composer install"

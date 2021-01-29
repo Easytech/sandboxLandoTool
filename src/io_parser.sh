@@ -6,7 +6,7 @@ VERBOSITY=0
 MODULE="core"
 PATCH=0
 VERSION=0
-ISSUE_QUEUE=0
+ISSUE_FORK=0
 LANDO_RECIPE="drupal9"
 WEBROOT="web"
 
@@ -14,43 +14,45 @@ for i in "$@"
 do
 case $i in
     -c=*|--core=*)
-    CORE_VERSION="${i#*=}"
-    shift # past argument=value
-    regex='^[8-9]+$'
-	if ! [[ $CORE_VERSION =~ $regex ]] ; then
-	   echo "Para correr este script, la version del core debe ser 8 o 9" >&2; exit 1
-	fi
+        CORE_VERSION="${i#*=}"
+        shift 
+        regex='^[8-9]+$'
+        if ! [[ $CORE_VERSION =~ $regex ]] ; then
+        echo "Para correr este script, la version del core debe ser 8 o 9" >&2; exit 1
+        fi
 
-	LANDO_RECIPE="drupal${CORE_VERSION}"
-
-    ;;
+        LANDO_RECIPE="drupal${CORE_VERSION}"
+        ;;
     -m=*|--module=*)
-    MODULE="${i#*=}"
-    shift # past argument=value
-    ;;
+        MODULE="${i#*=}"
+        shift 
+        ;;
     -mv=*|--module_version=*|--module-version=*)
-	MV="${i#*=}"
-    VERSION=":${i#*=}"
-    shift # past argument=value
-    ;;
+        MV="${i#*=}"
+        VERSION=":${i#*=}"
+        shift 
+        ;;
 
     -p=*|--patch=*)
-    PATCH="${i#*=}"
-    shift # past argument=value
-    ;;
-
+        PATCH="${i#*=}"
+        shift 
+        ;;
+    -if=*|--issue-fork=*)
+        ISSUE_FORK="${i#*=}"
+        shift 
+        ;;
     -vvv)
-    VERBOSITY=3
-    shift # past argument=value
-    ;;
+        VERBOSITY=3
+        shift 
+        ;;
     -vv)
-    VERBOSITY=2
-    shift # past argument=value
-    ;;
+        VERBOSITY=2
+        shift 
+        ;;
     -v)
-    VERBOSITY=1
-    shift # past argument=value
-    ;;
+        VERBOSITY=1
+        shift 
+        ;;
 
     *)
         echo -e "Options are: \n
@@ -74,10 +76,11 @@ echo "Module you're installing = ${MODULE}"
 
 echo "Module version           = ${MV}" # using $VERSION later
 echo "Patch                    = ${PATCH}"
+echo "Issue Fork               = ${ISSUE_FORK}"
 echo "Project name (folder)    = ${PROJECT_NAME}"
 
 if [ "${VERBOSITY}" -ge "1" ] ; then
-	echo "Lando recipe             = ${LANDO_RECIPE}"
+    echo "Lando recipe             = ${LANDO_RECIPE}"
 fi
 
 
@@ -86,14 +89,14 @@ fi
 
 
 
-if [ "${PATCH}" = "0" ] && [ "${ISSUE_QUEUE}" = "0" ]; then
-	echolor "\nThe script need the information of the issue to be able to run. Either enter a patch file URL or the fork."
-	exit 1
+if [ "${PATCH}" = "0" ] && [ "${ISSUE_FORK}" = "0" ]; then
+    echolor "\nThe script need the information of the issue to be able to run. Either enter a patch file URL or the fork."
+    exit 1
+fi
+
+if [ "${ISSUE_fork}" = "0" ]; then
+    PATCH_WORKFLOW=true
 fi
 
 
-if [ ! "${PATCH}" = "0" ] && [ "${VERSION}" = "0" ]; then
-	echolor "\nThe script needs the VERSION of the module you're testing. Please enter it like this:\n\n\t--module_version=5.x-dev@dev\n"
-	exit 1
-fi
 ## si tiene modulo tiene que tener version?
