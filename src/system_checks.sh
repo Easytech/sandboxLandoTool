@@ -1,5 +1,7 @@
 #!/bin/bash
 
+composer --version
+
 which git > /dev/null
 if [ ! $? = 0 ]; then
 	echo "Script is unable to find Git. Please correct this."
