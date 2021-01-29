@@ -3,7 +3,7 @@
 ## defaults
 CORE_VERSION=9
 VERBOSITY=0
-MODULE="core"
+MODULE=0
 PATCH=0
 VERSION=0
 ISSUE_QUEUE=0
@@ -86,14 +86,13 @@ fi
 
 
 
-if [ "${PATCH}" = "0" ] && [ "${ISSUE_QUEUE}" = "0" ]; then
-	echolor "\nThe script need the information of the issue to be able to run. Either enter a patch file URL or the fork."
-	exit 1
-fi
+#if [ "${PATCH}" = "0" ] && [ "${ISSUE_QUEUE}" = "0" ]; then
+#	echolor "\nThe script need the information of the issue to be able to run. Either enter a patch file URL or the fork."
+#	exit 1
+#fi
 
 
-if [ ! "${PATCH}" = "0" ] && [ "${VERSION}" = "0" ]; then
-	echolor "\nThe script needs the VERSION of the module you're testing. Please enter it like this:\n\n\t--module_version=5.x-dev@dev\n"
+if [ ! "${MODULE}" = "0" ] && [ "${VERSION}" = "0" ]; then
+	echolor "\nIf a module is provided, the script needs its VERSION to install it. Please enter it like this:\n\n\t--module_version=1.x-dev@dev\n"
 	exit 1
 fi
-## si tiene modulo tiene que tener version?

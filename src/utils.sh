@@ -10,6 +10,23 @@ echolor() {
 	echo -e "\x1B[33m$1\x1B[0m"
 }
 
+# Composer with docker
+composer () {
+    echo -e " ✈ Composer using Docker ...."
+
+    tty=
+    tty -s && tty=--tty\
+    docker run \
+        $tty \
+        --interactive \
+        --rm \
+        --user $(id -u):$(id -g) \
+        --volume /etc/passwd:/etc/passwd:ro \
+        --volume /etc/group:/etc/group:ro \
+        --volume $(pwd):/app \
+        composer "$@"
+}
+
 run_composer() {
 	if [ "${VERBOSITY}" = "0" ] ; then
 		cmd="$1 -q"

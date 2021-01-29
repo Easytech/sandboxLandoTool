@@ -1,14 +1,15 @@
 #!/bin/bash
-
-. src/system_checks.sh
 . src/utils.sh
+. src/system_checks.sh
 . src/io_parser.sh
+
 
 
 custom_message "Starting a local development environment for a \n
 \tDrupal $CORE_VERSION project, \n
 \tto test a patch against $MODULE$VERSION"
-run_composer "composer create-project drupal/recommended-project:^$CORE_VERSION $PROJECT_NAME"
+
+run_composer "composer --ignore-platform-reqs create-project drupal/recommended-project:^$CORE_VERSION $PROJECT_NAME"
 
 # This folder exists.
 cd $PROJECT_NAME
@@ -32,19 +33,20 @@ if [ ! "${DRUSH_EXISTS}" = "0" ] ; then
 fi
 
 
+if [ ! "${MODULE}" = 0 ]; then
+	custom_message "Adding $MODULE as a requirement via Composer"
+	run_lando "lando composer require drupal/$MODULE$VERSION  --no-update"
+fi
 
-custom_message "Adding $MODULE as a requirement via Composer"
-run_lando "lando composer require drupal/$MODULE$VERSION  --no-update"
-
-
-custom_message "Setting up patches libraries and downloading patch."
+custom_message "Setting up patch libraries and downloading patch."
 
 run_lando "lando composer require cweagans/composer-patches"
 run_lando "lando composer require szeidler/composer-patches-cli:^1.0"
 run_lando "lando composer patch-enable --file=patches.json"
 
-run_lando "lando composer patch-add drupal/${MODULE} ${MODULE} ${PATCH} "
-
+if [ ! "${PATCH}" = 0 ]; then
+	run_lando "lando composer patch-add drupal/${MODULE} ${MODULE} ${PATCH} "
+fi
 
 
 custom_message "Running composer install"
@@ -57,16 +59,20 @@ cp ../src/install.php .
 run_forced "lando php ./install.php quick-start -s -n --site-name $PROJECT_NAME --langcode=es standard" 
 rm install.php
 
-custom_message "Enableing $MODULE"
-run_lando "lando drush en $MODULE"
-
-echo -e "Done.\n"
+if [ ! "${MODULE}" = 0 ]; then
+	custom_message "Enableing $MODULE"
+	run_lando "lando drush en $MODULE"
+	echo -e "Done.\n"
+fi
 
 custom_message "Use any of these URLS to access the site"
 lando info --service="appserver" | grep http | sed  's/\[//g' | sed 's/ //g' | awk  -F '\047' '{printf "\t%s\n", $2}'
 
+echo -e "\n"
 run_lando "lando drush upwd admin admin"
 custom_message "Log in with these credentials"
 
 echolor "\tUser:        admin"
 echolor "\tPassword:    admin"
+
+custom_message "To start working, enter directory $PROJECT_NAME"
