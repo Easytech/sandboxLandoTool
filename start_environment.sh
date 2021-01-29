@@ -65,6 +65,7 @@ echo -e "Done.\n"
 custom_message "Use any of these URLS to access the site"
 lando info --service="appserver" | grep http | sed  's/\[//g' | sed 's/ //g' | awk  -F '\047' '{printf "\t%s\n", $2}'
 
+echo "\n"
 run_lando "lando drush upwd admin admin"
 custom_message "Log in with these credentials"
 
