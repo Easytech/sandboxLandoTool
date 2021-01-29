@@ -12,9 +12,7 @@ echolor() {
 
 # Composer with docker
 composer () {
-    echo -e "\e[38:5:42m------------------------------------------------------"\
     echo -e " ✈ Composer using Docker ...."
-    echo -e "------------------------------------------------------"\
 
     tty=
     tty -s && tty=--tty\

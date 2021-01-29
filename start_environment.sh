@@ -4,11 +4,12 @@
 . src/utils.sh
 . src/io_parser.sh
 
+run_composer "composer --version"
 
 custom_message "Starting a local development environment for a \n
 \tDrupal $CORE_VERSION project, \n
 \tto test a patch against $MODULE$VERSION"
-run_composer "composer create-project drupal/recommended-project:^$CORE_VERSION $PROJECT_NAME"
+run_composer "composer --ignore-platform-reqs create-project drupal/recommended-project:^$CORE_VERSION $PROJECT_NAME"
 
 # This folder exists.
 cd $PROJECT_NAME
